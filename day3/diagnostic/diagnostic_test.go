@@ -13,3 +13,9 @@ func TestGetRate(t *testing.T) {
 	assert.Equal(t, 22, gamma)
 	assert.Equal(t, 9, epsilon)
 }
+
+func TestGetOxygenRating(t *testing.T) {
+	o2 := GetOxygenRating(input)
+	assert.Equal(t, "10111", o2)
+
+}
