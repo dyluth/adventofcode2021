@@ -31,27 +31,43 @@ func GetRate(inputs []string) (gamma, epsilon int) {
 		}
 	}
 	gammaString := strings.Join(gammaList, "")
-	gamma64, err := strconv.ParseInt(gammaString, 2, 64)
-	if err != nil {
-		panic(err)
-	}
-
 	epsilonString := strings.Join(epsilonList, "")
-	epsilon64, err := strconv.ParseInt(epsilonString, 2, 64)
-	if err != nil {
-		panic(err)
-	}
-	return int(gamma64), int(epsilon64)
+	return binaryStringToInt(gammaString), binaryStringToInt(epsilonString)
 }
 
-func GetOxygenRating(inputs []string) string {
+func binaryStringToInt(binary string) int {
+	val64, err := strconv.ParseInt(binary, 2, 64)
+	if err != nil {
+		panic(err)
+	}
+	return int(val64)
+}
+
+func GetOxygenRating(inputs []string) int {
 	prefix := []string{}
 	for i := 0; i < len(inputs[0]); i++ {
-		v := getCommonValue(inputs, i)
+		v := getCommonValue(inputs, i, "1")
 		prefix = append(prefix, v)
 		inputs = subSliceByPrefix(inputs, strings.Join(prefix, ""))
 		if len(inputs) == 1 {
-			return inputs[0]
+			return binaryStringToInt(inputs[0])
+		}
+	}
+	panic(fmt.Sprintf("erm.. still have: %+v\n", inputs))
+}
+func GetCarbonDioxideRating(inputs []string) int {
+	prefix := []string{}
+	for i := 0; i < len(inputs[0]); i++ {
+		v := getCommonValue(inputs, i, "1")
+		if v == "0" {
+			v = "1"
+		} else {
+			v = "0"
+		}
+		prefix = append(prefix, v)
+		inputs = subSliceByPrefix(inputs, strings.Join(prefix, ""))
+		if len(inputs) == 1 {
+			return binaryStringToInt(inputs[0])
 		}
 	}
 	panic(fmt.Sprintf("erm.. still have: %+v\n", inputs))
@@ -69,7 +85,8 @@ func subSliceByPrefix(inputs []string, prefix string) []string {
 }
 
 // returns the most common rune at that index in the slice of strings
-func getCommonValue(inputs []string, index int) string {
+// if there is a tie, it will use the prefer string instead
+func getCommonValue(inputs []string, index int, prefer string) string {
 	results := make(map[string]int)
 	for _, in := range inputs {
 		c := in[index : index+1]
@@ -83,6 +100,8 @@ func getCommonValue(inputs []string, index int) string {
 		if count > biggestValue {
 			biggestValue = count
 			biggest = val
+		} else if count == biggestValue {
+			biggest = prefer
 		}
 	}
 	return biggest

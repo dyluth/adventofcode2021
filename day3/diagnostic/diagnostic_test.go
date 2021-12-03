@@ -19,3 +19,8 @@ func TestGetOxygenRating(t *testing.T) {
 	assert.Equal(t, "10111", o2)
 
 }
+
+func TestGetCarbonDioxideRating(t *testing.T) {
+	co2 := GetCarbonDioxideRating(input)
+	assert.Equal(t, "01010", co2)
+}

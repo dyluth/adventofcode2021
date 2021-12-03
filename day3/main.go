@@ -12,5 +12,8 @@ func main() {
 	gamma, epsilon := diagnostic.GetRate(lines)
 	fmt.Printf("part1 result: %v\n", gamma*epsilon)
 
-	//fmt.Printf("part2 result: %v\n", forwards*down)
+	o2 := diagnostic.GetOxygenRating(lines)
+	co2 := diagnostic.GetCarbonDioxideRating(lines)
+
+	fmt.Printf("part2 result: %v\n", o2*co2)
 }
